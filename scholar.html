@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Student Scholarship Form</title>
+        <link rel="stylesheet" type="text/css" href="form.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="header">
+            Scholarship Form
+        </div>
+    
+        <div class="container">
+            <form id="scholarshipForm">
+                <div class="section-title">Personal Information :</div>
+                
+                <div class="form-row">
+                    <div class="form-label">
+                        Full Name<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                        <div class="error-message" id="fullNameError"></div>
+                    </div>
+                    <div class="form-label">
+                        Age<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="number" id="age" placeholder="Enter your age">
+                        <div class="error-message" id="ageError"></div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">
+                        Father/Mother Name<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="parentName" placeholder="Enter parent name">
+                        <div class="error-message" id="parentNameError"></div>
+                    </div>
+                    <div class="form-label">
+                        Occupation<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="occupation" placeholder="Enter occupation">
+                        <div class="error-message" id="occupationError"></div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">
+                        Address<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <textarea id="address" placeholder="Enter your address"></textarea>
+                        <div class="error-message" id="addressError"></div>
+                    </div>
+                    <div class="form-label" style="margin-top: -41px;">
+                        Relationship<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="relationship" placeholder="Enter relationship">
+                        <div class="error-message" id="relationshipError"></div>
+                    </div>
+                </div>
+                
+                <div class="section-title">Marks</div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Subject</th>
+                            <th>Total</th>
+                            <th>Score</th>
+                            <th>%</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTable">
+                        <!-- Table rows will be added dynamically -->
+                    </tbody>
+                </table>
+                
+                <button type="button" id="addSubjectBtn" class="add-subject-btn">
+                    <span class="plus-icon">+</span> Add Subject
+                </button>
+                <div class="error-message" id="subjectsError"></div>
+                
+                <div class="section-title">Income Details</div>
+                
+                <div class="form-row">
+                    <div class="form-label">
+                        Annual Income<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="annualIncome" placeholder="Enter annual income">
+                        <div class="error-message" id="annualIncomeError"></div>
+                    </div>
+                    <div class="form-label">
+                        Requisition Amount<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="number" id="requisitionAmount" placeholder="Enter requisition amount">
+                        <div class="error-message" id="requisitionAmountError"></div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">
+                        Nature Of Requisition<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="text" id="natureRequisition" placeholder="Enter nature of requisition">
+                        <div class="error-message" id="natureRequisitionError"></div>
+                    </div>
+                    <div class="form-label">
+                        Fund Amount<span>*</span>
+                    </div>
+                    <div class="form-input">
+                        <input type="number" id="fundAmount" placeholder="Enter fund amount">
+                        <div class="error-message" id="fundAmountError"></div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+        <script src="form.js"></script>
+    </body>
+</html>
