@@ -1,181 +1,169 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('scholarshipForm');
-    const addSubjectBtn = document.getElementById('addSubjectBtn');
-    const subjectsTable = document.getElementById('subjectsTable');
-    const errorAlert = document.getElementById('errorAlert');
-    const successAlert = document.getElementById('successAlert');
-    
-    // Add first subject row by default
-    // addSubjectRow();
-    
+$(document).ready(function() {
+    const $form = $('#scholarshipForm');
+    const $addSubjectBtn = $('#addSubjectBtn');
+    const $subjectsTable = $('#subjectsTable');
+    const $errorAlert = $('#errorAlert');
+    const $successAlert = $('#successAlert');
+
     // Add subject button event listener
-    addSubjectBtn.addEventListener('click', function() {
-        // Check if existing rows are properly filled before adding a new one
-        const rows = subjectsTable.getElementsByTagName('tr');
-        
-        // If there are rows, validate the last row before adding a new one
-        if (rows.length > 0) {
-            const lastRow = rows[rows.length - 1];
-            const subjectName = lastRow.querySelector('.subject-name').value.trim();
-            const totalMarks = lastRow.querySelector('.total-marks').value.trim();
-            const score = lastRow.querySelector('.score').value.trim();
-            
+    $addSubjectBtn.on('click', function() {
+        const $rows = $subjectsTable.find('tr');
+
+        // Validate the last row before adding a new one
+        if ($rows.length > 0) {
+            const $lastRow = $rows.last();
+            const subjectName = $lastRow.find('.subject-name').val().trim();
+            const totalMarks = $lastRow.find('.total-marks').val().trim();
+            const score = $lastRow.find('.score').val().trim();
+
             if (!subjectName || !totalMarks || !score) {
                 showError('subjectsError', 'Fill the fields in the current row before adding a new one');
                 return;
             }
         }
-        
+
         // Check maximum rows
-        if (rows.length >= 5) {
+        if ($rows.length >= 5) {
             showError('subjectsError', 'Maximum 5 subjects allowed');
-            addSubjectBtn.classList.add('disabled');
+            $addSubjectBtn.addClass('disabled');
         } else {
             addSubjectRow();
-            if (rows.length >= 5) {
-                addSubjectBtn.classList.add('disabled');
+            if ($rows.length >= 5) {
+                $addSubjectBtn.addClass('disabled');
             }
         }
     });
-    
+
     // Form submission event listener
-    form.addEventListener('submit', function(e) {
+    $form.on('submit', function(e) {
         e.preventDefault();
         if (validateForm()) {
-            // Form is valid, show success message
             showSuccess('Form submitted successfully!');
             // Normally you would submit the form here
-            // form.submit();
+            // $form.submit();
         }
     });
-    
+
     // Function to add a new subject row
     function addSubjectRow() {
-        const rows = subjectsTable.getElementsByTagName('tr');
-        const rowCount = rows.length;
-        const newRow = document.createElement('tr');
-        
-        newRow.innerHTML = `
-            <td>${rowCount + 1}</td>
-            <td><input type="text" class="subject-input subject-name" placeholder="Subject name" required></td>
-            <td><input type="number" class="subject-input total-marks" placeholder="Total" required></td>
-            <td><input type="number" class="subject-input score" placeholder="Score" required></td>
-            <td class="percentage">-</td>
-            <td><button type="button" class="remove-btn">×</button></td>
-        `;
-        
-        subjectsTable.appendChild(newRow);
-        
+        const $rows = $subjectsTable.find('tr');
+        const rowCount = $rows.length;
+        const $newRow = $(`
+            <tr>
+                <td>${rowCount + 1}</td>
+                <td><input type="text" class="subject-input subject-name" placeholder="Subject name" required></td>
+                <td><input type="number" class="subject-input total-marks" placeholder="Total" required></td>
+                <td><input type="number" class="subject-input score" placeholder="Score" required></td>
+                <td class="percentage">-</td>
+                <td><button type="button" class="remove-btn">×</button></td>
+            </tr>
+        `);
+
+        $subjectsTable.append($newRow);
+
         // Add event listeners to the new row
-        setupRowEventListeners(newRow);
+        setupRowEventListeners($newRow);
     }
-    
+
     // Setup event listeners for a row
-    function setupRowEventListeners(row) {
-        const removeBtn = row.querySelector('.remove-btn');
-        const totalInput = row.querySelector('.total-marks');
-        const scoreInput = row.querySelector('.score');
-        const subjectInput = row.querySelector('.subject-name');
-        
+    function setupRowEventListeners($row) {
+        const $removeBtn = $row.find('.remove-btn');
+        const $totalInput = $row.find('.total-marks');
+        const $scoreInput = $row.find('.score');
+        const $subjectInput = $row.find('.subject-name');
+
         // Remove button event listener
-        removeBtn.addEventListener('click', function() {
-            subjectsTable.removeChild(row);
+        $removeBtn.on('click', function() {
+            $row.remove();
             updateRowNumbers();
             // Enable the add button if needed
-            if (subjectsTable.getElementsByTagName('tr').length < 5) {
-                addSubjectBtn.classList.remove('disabled');
+            if ($subjectsTable.find('tr').length < 5) {
+                $addSubjectBtn.removeClass('disabled');
             }
         });
-        
+
         // Calculate percentage when total or score changes
-        [totalInput, scoreInput].forEach(input => {
-            input.addEventListener('input', function() {
-                calculatePercentage(row);
-            });
+        $totalInput.add($scoreInput).on('input', function() {
+            calculatePercentage($row);
         });
-        
+
         // Clear error when inputs change
-        [totalInput, scoreInput, subjectInput].forEach(input => {
-            input.addEventListener('input', function() {
-                clearError('subjectsError');
-            });
+        $totalInput.add($scoreInput).add($subjectInput).on('input', function() {
+            clearError('subjectsError');
         });
     }
-    
+
     // Calculate percentage for a row
-    function calculatePercentage(row) {
-        const totalInput = row.querySelector('.total-marks');
-        const scoreInput = row.querySelector('.score');
-        const percentageCell = row.querySelector('.percentage');
-        
-        const total = parseFloat(totalInput.value) || 0;
-        const score = parseFloat(scoreInput.value) || 0;
-        
+    function calculatePercentage($row) {
+        const $totalInput = $row.find('.total-marks');
+        const $scoreInput = $row.find('.score');
+        const $percentageCell = $row.find('.percentage');
+
+        const total = parseFloat($totalInput.val()) || 0;
+        const score = parseFloat($scoreInput.val()) || 0;
+
         if (total > 0 && score <= total) {
             const percentage = (score / total * 100).toFixed(1);
-            percentageCell.textContent = percentage + '%';
+            $percentageCell.text(percentage + '%');
         } else if (score > total) {
-            percentageCell.textContent = 'Error';
+            $percentageCell.text('Error');
             showError('', 'Score cannot be greater than total');
         } else {
-            percentageCell.textContent = '-';
+            $percentageCell.text('-');
         }
     }
-    
+
     // Update row numbers after deletion
     function updateRowNumbers() {
-        const rows = subjectsTable.getElementsByTagName('tr');
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].cells[0].textContent = i + 1;
-        }
+        const $rows = $subjectsTable.find('tr');
+        $rows.each(function(index) {
+            $(this).find('td:first').text(index + 1);
+        });
     }
-    
+
     // Show error message
     function showError(fieldId, message) {
         if (fieldId) {
-            const errorElement = document.getElementById(fieldId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
+            const $errorElement = $('#' + fieldId);
+            $errorElement.text(message).show();
             setTimeout(() => {
-                errorElement.style.display = 'none';
+                $errorElement.hide();
             }, 3000);
         } else {
-            errorAlert.textContent = message;
-            errorAlert.style.display = 'block';
+            $errorAlert.text(message).show();
             setTimeout(() => {
-                errorAlert.style.display = 'none';
+                $errorAlert.hide();
             }, 3000);
         }
     }
-    
+
     // Clear error message
     function clearError(fieldId) {
         if (fieldId) {
-            const errorElement = document.getElementById(fieldId);
-            errorElement.style.display = 'none';
+            const $errorElement = $('#' + fieldId);
+            $errorElement.hide();
         }
     }
-    
+
     // Show success message
     function showSuccess(message) {
-        successAlert.textContent = message;
-        successAlert.style.display = 'block';
+        $successAlert.text(message).show();
         setTimeout(() => {
-            successAlert.style.display = 'none';
+            $successAlert.hide();
         }, 3000);
     }
-    
+
     // Validate the entire form
     function validateForm() {
         let isValid = true;
 
         // Validate personal information
-        const fullName = document.getElementById('fullName').value.trim();
-        const age = document.getElementById('age').value.trim();
-        const parentName = document.getElementById('parentName').value.trim();
-        const occupation = document.getElementById('occupation').value.trim();
-        const address = document.getElementById('address').value.trim();
-        const relationship = document.getElementById('relationship').value.trim();
+        const fullName = $('#fullName').val().trim();
+        const age = $('#age').val().trim();
+        const parentName = $('#parentName').val().trim();
+        const occupation = $('#occupation').val().trim();
+        const address = $('#address').val().trim();
+        const relationship = $('#relationship').val().trim();
 
         if (!fullName) {
             showError('fullNameError', 'Full name is required');
@@ -228,28 +216,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Validate subjects
-        const rows = subjectsTable.getElementsByTagName('tr');
-        if (rows.length === 0) {
+        const $rows = $subjectsTable.find('tr');
+        if ($rows.length === 0) {
             showError('subjectsError', 'At least one subject is required');
             isValid = false;
         } else {
-            for (let i = 0; i < rows.length; i++) {
-                const subjectName = rows[i].querySelector('.subject-name').value.trim();
-                const totalMarks = rows[i].querySelector('.total-marks').value.trim();
-                const score = rows[i].querySelector('.score').value.trim();
+            $rows.each(function() {
+                const subjectName = $(this).find('.subject-name').val().trim();
+                const totalMarks = $(this).find('.total-marks').val().trim();
+                const score = $(this).find('.score').val().trim();
 
                 if (!subjectName || !totalMarks || !score) {
                     showError('subjectsError', 'All subject fields are required');
                     isValid = false;
-                    break;
+                    return false; // Break out of the loop
                 }
 
                 if (parseFloat(score) > parseFloat(totalMarks)) {
                     showError('subjectsError', 'Score cannot be greater than total marks');
                     isValid = false;
-                    break;
+                    return false; // Break out of the loop
                 }
-            }
+            });
         }
 
         // If subjects are invalid, stop further validation
@@ -258,10 +246,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Validate income details
-        const annualIncome = document.getElementById('annualIncome').value.trim();
-        const requisitionAmount = document.getElementById('requisitionAmount').value.trim();
-        const natureRequisition = document.getElementById('natureRequisition').value.trim();
-        const fundAmount = document.getElementById('fundAmount').value.trim();
+        const annualIncome = $('#annualIncome').val().trim();
+        const requisitionAmount = $('#requisitionAmount').val().trim();
+        const natureRequisition = $('#natureRequisition').val().trim();
+        const fundAmount = $('#fundAmount').val().trim();
 
         if (!annualIncome) {
             showError('annualIncomeError', 'Annual income is required');
