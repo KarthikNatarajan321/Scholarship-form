@@ -1,4 +1,3 @@
-/* General Styles */
 * {
     margin: 0;
     padding: 0;
@@ -35,30 +34,29 @@ body {
 .form-row {
     display: flex;
     margin-bottom: 15px;
-    flex-wrap: wrap;
 }
 
 .form-label {
-    width: 100%;
-    margin-bottom: 5px;
-    text-align: left;
+    width: 20%;
+    padding-right: 10px;
+    text-align: right;
     display: flex;
     align-items: center;
-    font-size: 16px;
 }
 
 .form-input {
-    width: 100%;
+    width: 25%;
+    padding-right: 30px;
 }
 
 .form-input input, .form-input textarea {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     border: none;
-    border-radius: 7px;
+    border-radius: 0;
     background-color: #e9ecf0;
+    border-radius: 7px;
     outline: none;
-    font-size: 14px;
 }
 
 .form-input textarea {
@@ -71,18 +69,10 @@ body {
     margin-left: 3px;
 }
 
-/* Table Styles */
-.table-container {
-    overflow-x: auto;
-    width: 100%;
-    max-width: 100%;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    min-width: 600px;
 }
 
 th, td {
@@ -105,17 +95,18 @@ tr:nth-child(even) {
     background-color: #f5f5f5;
 }
 
-/* Button Styles */
-.add-subject-btn, .submit-btn {
+.add-subject-btn {
     background-color: #223c68;
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 7px;
+    padding: 8px 15px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 0;
+    font-size: 14px;
 }
 
 .remove-btn {
@@ -123,13 +114,32 @@ tr:nth-child(even) {
     color: white;
     border: none;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 14px;
+    margin: 0 auto;
+}
+
+.submit-btn {
+    background-color: #223c68;
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 15px;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 32px;
+    font-size: 16px;
+}
+
+.plus-icon {
+    margin-right: 5px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .error-message {
@@ -139,11 +149,25 @@ tr:nth-child(even) {
     display: none;
 }
 
-/* Mobile Responsive Styles */
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.subject-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: center;
+    outline: none;
+}
+
+/* Mobile Responsive Media Queries */
 @media screen and (max-width: 768px) {
     .container {
+        width: 100%;
         padding: 10px;
-        height: auto;
+        height: 100vh;
     }
 
     .form-row {
@@ -152,6 +176,14 @@ tr:nth-child(even) {
 
     .form-label, .form-input {
         width: 100%;
+        text-align: left;
+        padding-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .form-label {
+        margin-top: 10px;
+        text-align: left;
     }
 
     .section-title {
@@ -165,9 +197,27 @@ tr:nth-child(even) {
     th, td {
         padding: 6px 3px;
     }
+
+    .submit-btn {
+        width: 100%;
+        float: none;
+    }
+
+    .add-subject-btn {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
+/* Smaller Mobile Screens */
 @media screen and (max-width: 480px) {
+    .container {
+        width: 100%; 
+        padding: 10px;
+        height: 100vh;
+    }
+
     .header {
         font-size: 20px;
     }
@@ -176,36 +226,15 @@ tr:nth-child(even) {
         font-size: 16px;
     }
 
-    .form-input input, .form-input textarea {
-        font-size: 14px;
-    }
-}
-
-/* Additional Fixes for Small Screens (Galaxy S8+) */
-@media screen and (max-width: 380px) {
-    .header {
-        font-size: 18px;
-        padding: 10px;
-    }
-    .section-title {
-        font-size: 14px;
-        margin: 15px 0 10px 0;
-    }
-    .form-label, .form-input {
-        font-size: 14px;
-    }
-    .form-input input, .form-input textarea {
-        font-size: 12px;
-        padding: 6px;
-    }
-    .table-container {
-        overflow-x: auto;
-        display: block;
-    }
     table {
         font-size: 12px;
     }
+
     th, td {
         padding: 4px 2px;
+    }
+
+    .form-input input, .form-input textarea {
+        font-size: 14px;
     }
 }
