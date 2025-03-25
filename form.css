@@ -161,3 +161,88 @@ tr:nth-child(even) {
     text-align: center;
     outline: none;
 }
+
+/* Mobile Responsive Media Queries */
+@media screen and (max-width: 768px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .container {
+        flex: 1;
+        overflow-y: auto;
+        height: 100%;
+        padding: 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-label, .form-input {
+        width: 100%;
+        text-align: left;
+        padding-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .form-label {
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    .section-title {
+        margin: 20px 0 15px 0;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 6px 3px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        float: none;
+    }
+
+    .add-subject-btn {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Smaller Mobile Screens */
+@media screen and (max-width: 480px) {
+    .container {
+        width: 100%; 
+        padding: 10px;
+        height: 100vh;
+    }
+
+    .header {
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 4px 2px;
+    }
+
+    .form-input input, .form-input textarea {
+        font-size: 14px;
+    }
+}
