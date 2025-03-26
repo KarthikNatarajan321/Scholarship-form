@@ -15,14 +15,20 @@ $(document).ready(function() {
             const score = $lastRow.find('.score').val().trim();
 
             if (!subjectName || !totalMarks || !score) {
-                alert('Fill the fields in the current row before adding a new one');
+                $('#subjectsError').show();
+                $('#subjectsError').addClass('error-message');
+                $('#subjectsError').text('Fill the fields in the current row before adding a new one');
                 return;
+            } else {
+                $('#subjectsError').hide();
             }
         }
 
         // Check maximum rows
         if ($rows.length >= 5) {
-            alert('Maximum 5 subjects allowed');
+            $subjectsError.show();
+            $subjectsError.addClass('error-message');
+            $subjectsError.text('Maximum 5 subjects allowed');
             $addSubjectBtn.addClass('disabled');
         } else {
             addSubjectRow();
