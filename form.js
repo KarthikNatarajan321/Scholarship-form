@@ -2,41 +2,27 @@ $(document).ready(function() {
     const $form = $('#scholarshipForm');
     const $addSubjectBtn = $('#addSubjectBtn');
     const $subjectsTable = $('#subjectsTable tbody');
+    
+    // Updated form fields in the exact order of the form
+    const formFields = [
+        'fullName', 
+        'age', 
+        'parentName', 
+        'occupation', 
+        'address', 
+        'relationship', 
+        'subjectsTable', 
+        'annualIncome', 
+        'requisitionAmount', 
+        'natureRequisition', 
+        'fundAmount'
+    ];
 
-    // Add subject functionality (keeping existing logic)
-    $addSubjectBtn.on('click', function() {
-        const $rows = $subjectsTable.find('tr');
-
-        // Validate the last row before adding a new one
-        if ($rows.length > 0) {
-            const $lastRow = $rows.last();
-            const subjectName = $lastRow.find('.subject-name').val().trim();
-            const totalMarks = $lastRow.find('.total-marks').val().trim();
-            const score = $lastRow.find('.score').val().trim();
-
-            if (!subjectName || !totalMarks || !score) {
-                $('#subjectsError').show();
-                $('#subjectsError').addClass('error-message');
-                $('#subjectsError').text('Fill the fields in the current row before adding a new one');
-                return;
-            } else {
-                $('#subjectsError').hide();
-            }
-        }
-
-        // Check maximum rows
-        if ($rows.length >= 5) {
-            $subjectsError.show();
-            $subjectsError.addClass('error-message');
-            $subjectsError.text('Maximum 5 subjects allowed');
-            $addSubjectBtn.addClass('disabled');
-        } else {
-            addSubjectRow();
-            if ($rows.length >= 4) {
-                $addSubjectBtn.addClass('disabled');
-            }
-        }
-    });
+    // Initialize first subject row
+    function initializeSubjectsTable() {
+        // Add the first row by default
+        addSubjectRow();
+    }
 
     // Function to add a new subject row
     function addSubjectRow() {
@@ -64,21 +50,31 @@ $(document).ready(function() {
         const $removeBtn = $row.find('.remove-btn');
         const $totalInput = $row.find('.total-marks');
         const $scoreInput = $row.find('.score');
+        const $subjectInput = $row.find('.subject-name');
 
         // Remove button event listener
         $removeBtn.on('click', function() {
-            $row.remove();
-            updateRowNumbers();
-            // Enable the add button if needed
-            if ($subjectsTable.find('tr').length < 5) {
-                $addSubjectBtn.removeClass('disabled');
+            if ($subjectsTable.find('tr').length > 1) {
+                $row.remove();
+                updateRowNumbers();
+                // Enable the add button if needed
+                if ($subjectsTable.find('tr').length < 5) {
+                    $addSubjectBtn.removeClass('disabled');
+                }
+                
+                // Validate subjects table
+                validateSubjectsTable();
             }
         });
 
         // Calculate percentage when total or score changes
         $totalInput.add($scoreInput).on('input', function() {
             calculatePercentage($row);
+            validateSubjectsTable();
         });
+
+        // Validate on subject input
+        $subjectInput.on('input', validateSubjectsTable);
     }
 
     // Calculate percentage for a row
@@ -100,6 +96,54 @@ $(document).ready(function() {
         }
     }
 
+    // Validate subjects table
+    function validateSubjectsTable() {
+        const $rows = $subjectsTable.find('tr');
+        let isValid = true;
+        let hasContent = false;
+
+        $rows.each(function() {
+            const $row = $(this);
+            const subjectName = $row.find('.subject-name').val().trim();
+            const totalMarks = $row.find('.total-marks').val().trim();
+            const score = $row.find('.score').val().trim();
+
+            if (subjectName || totalMarks || score) {
+                hasContent = true;
+            }
+
+            if (subjectName && totalMarks && score) {
+                const totalMarksNum = parseFloat(totalMarks);
+                const scoreNum = parseFloat(score);
+
+                if (scoreNum > totalMarksNum) {
+                    isValid = false;
+                    return false;
+                }
+            } else if (subjectName || totalMarks || score) {
+                // Partially filled row
+                isValid = false;
+                return false;
+            }
+        });
+
+        if (!hasContent) {
+            isValid = false;
+        }
+
+        // Update error message
+        if (!isValid) {
+            $('#subjectsError')
+                .show()
+                .addClass('error-message')
+                .text('Please fill all subject fields correctly or remove empty rows');
+        } else {
+            $('#subjectsError').hide();
+        }
+
+        return isValid;
+    }
+
     // Update row numbers after deletion
     function updateRowNumbers() {
         const $rows = $subjectsTable.find('tr');
@@ -108,23 +152,164 @@ $(document).ready(function() {
         });
     }
 
-    // jQuery Validation Setup with Comprehensive Rules
+    // Add subject button event listener
+    $addSubjectBtn.on('click', function() {
+        // Validate existing rows first
+        if (validateSubjectsTable()) {
+            const $rows = $subjectsTable.find('tr');
+
+            // Check maximum rows
+            if ($rows.length >= 5) {
+                $('#subjectsError')
+                    .show()
+                    .addClass('error-message')
+                    .text('Maximum 5 subjects allowed');
+                $addSubjectBtn.addClass('disabled');
+            } else {
+                addSubjectRow();
+                if ($rows.length >= 4) {
+                    $addSubjectBtn.addClass('disabled');
+                }
+            }
+        }
+    });
+
+    // Setup progressive validation
+    function setupProgressiveValidation() {
+        let currentFieldIndex = 0;
+    
+        // Disable all fields initially
+        formFields.slice(1).forEach(field => {
+            if (field === 'subjectsTable') {
+                // Disable add subject button
+                $('#addSubjectBtn').prop('disabled', true);
+            } else {
+                $(`#${field}`).prop('disabled', true);
+            }
+        });
+    
+        // Function to check if all previous fields are valid
+        function areAllPreviousFieldsValid(currentIndex) {
+            for (let i = 0; i < currentIndex; i++) {
+                const field = formFields[i];
+                
+                // Skip checking subjectsTable
+                if (field === 'subjectsTable') continue;
+                
+                const $input = $(`#${field}`);
+                
+                // If any previous field is not valid, return false
+                if (!$input.valid()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    
+        // Custom validation function
+        function validateCurrentField() {
+            const currentField = formFields[currentFieldIndex];
+            
+            // Special handling for subjects table
+            if (currentField === 'subjectsTable') {
+                // Only proceed if all previous fields are valid
+                if (!areAllPreviousFieldsValid(currentFieldIndex)) {
+                    $('#addSubjectBtn').prop('disabled', true);
+                    $('#subjectsError')
+                        .show()
+                        .addClass('error-message')
+                        .text('Please complete all previous fields first');
+                    return false;
+                }
+    
+                const isValid = validateSubjectsTable();
+    
+                if (isValid) {
+                    $('#subjectsError').hide();
+                    // Move to next field
+                    if (currentFieldIndex < formFields.length - 1) {
+                        currentFieldIndex++;
+                        const nextField = formFields[currentFieldIndex];
+                        
+                        if (nextField === 'subjectsTable') {
+                            $('#addSubjectBtn').prop('disabled', false);
+                        } else {
+                            $(`#${nextField}`).prop('disabled', false);
+                            $(`#${nextField}`).focus();
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+    
+            // Regular field validation
+            const $currentInput = $(`#${currentField}`);
+            const errorId = `#${currentField}Error`;
+            
+            // Remove any previous error styling
+            $currentInput.removeClass('error');
+            $(errorId).hide();
+    
+            // Validate the current field
+            if ($currentInput.valid()) {
+                // Current field is valid
+                $currentInput.addClass('valid');
+                $(errorId).hide();
+                
+                // Move to next field if it exists
+                if (currentFieldIndex < formFields.length - 1) {
+                    currentFieldIndex++;
+                    const nextField = formFields[currentFieldIndex];
+                    
+                    if (nextField === 'subjectsTable') {
+                        // Only enable if all previous fields are valid
+                        if (areAllPreviousFieldsValid(currentFieldIndex)) {
+                            $('#addSubjectBtn').prop('disabled', false);
+                        } else {
+                            $('#addSubjectBtn').prop('disabled', true);
+                        }
+                    } else {
+                        $(`#${nextField}`).prop('disabled', false);
+                        $(`#${nextField}`).focus();
+                    }
+                }
+                return true;
+            } else {
+                // Field is invalid
+                $currentInput.addClass('error');
+                $(errorId).show();
+                $currentInput.focus();
+                return false;
+            }
+        }
+    
+        // Add onChange validation for each field
+        formFields.forEach(field => {
+            if (field === 'subjectsTable') {
+                // Special handling for subjects table
+                $subjectsTable.on('change', 'input', validateCurrentField);
+            } else {
+                $(`#${field}`).on('change', validateCurrentField);
+            }
+        });
+    
+        // Initial setup of first field (full name)
+        $(`#${formFields[0]}`).prop('disabled', false);
+    } 
+
+    // Setup the form with progressive validation
     $("#scholarshipForm").validate({
-        // Custom error placement
         errorPlacement: function(error, element) {
-            // Place error messages next to the input
             error.insertAfter(element);
             $(error).addClass("error-message");
-            // Also show error in the designated error message div
             var errorId = "#" + element.attr("id") + "Error";
             $(errorId).text(error.text()).show();
         },
 
-        // Custom highlight and unhighlight
         highlight: function(element) {
             $(element).addClass("error");
             var errorId = "#" + $(element).attr("id") + "Error";
-            // $(errorId).addClass("error-message");
             $(errorId).show();
         },
         unhighlight: function(element) {
@@ -214,32 +399,12 @@ $(document).ready(function() {
             }
         },
 
-        // Form submission handler
         submitHandler: function(form) {
-            // Check subjects table validation
-            const $rows = $subjectsTable.find('tr');
-            if ($rows.length === 0) {
-                alert('At least one subject is required');
+            // Final validation of subjects table
+            if (!validateSubjectsTable()) {
                 return false;
             }
-
-            $rows.each(function() {
-                const subjectName = $(this).find('.subject-name').val().trim();
-                const totalMarks = $(this).find('.total-marks').val().trim();
-                const score = $(this).find('.score').val().trim();
-
-                if (!subjectName || !totalMarks || !score) {
-                    alert('All subject fields are required');
-                    return false;
-                }
-
-                if (parseFloat(score) > parseFloat(totalMarks)) {
-                    alert('Score cannot be greater than total marks');
-                    return false;
-                }
-            });
-
-            // If all validations pass
+            
             alert("Form submitted successfully!");
             form.submit();
         }
@@ -249,4 +414,10 @@ $(document).ready(function() {
     $.validator.addMethod("lettersonly", function(value, element) {
         return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
     });
+
+    // Initialize the subjects table with first row
+    initializeSubjectsTable();
+
+    // Initialize progressive validation
+    setupProgressiveValidation();
 });
