@@ -217,11 +217,25 @@ tr:nth-child(even) {
     #subjectsTable {
         width: 100%;
         font-size: 14px;
+        display: flex;
     }
+    
+    /* .table {
+        display: flex;
+    } */
+/* 
+    th,td{ 
+        flex-direction: column,
+    }; */
+
+       
+    
 
     #subjectsTable th,
     #subjectsTable td {
         padding: 8px 4px;
+        flex-direction: column;
+
     }
 
     /* Ensure inputs in table are full width */

@@ -178,7 +178,7 @@ $(document).ready(function() {
     function setupProgressiveValidation() {
         let currentFieldIndex = 0;
     
-        // Disable all fields initially
+        //Disable all fields initially
         formFields.slice(1).forEach(field => {
             if (field === 'subjectsTable') {
                 // Disable add subject button

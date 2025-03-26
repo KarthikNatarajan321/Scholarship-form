@@ -18,18 +18,18 @@
                 <div class="section-title">Personal Information</div>
                 
                 <div class="form-row">
-                    <div class="form-label">
+                    <div class="form-label" >
                         Full Name<span>*</span>
                     </div>
                     <div class="form-input">
-                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" tabindex="1">
                         <!-- <div id="fullNameError" class="error-message"></div> -->
                     </div>
                     <div class="form-label">
                         Age<span>*</span>
                     </div>
                     <div class="form-input">
-                        <input type="number" id="age" name="age" placeholder="Enter your age">
+                        <input type="number" id="age" name="age" placeholder="Enter your age" tabindex="2">
                         <!-- <div id="ageError" class="error-message"></div> -->
                     </div>
                 </div>
@@ -39,14 +39,14 @@
                         Father/Mother Name<span>*</span>
                     </div>
                     <div class="form-input">
-                        <input type="text" id="parentName" name="parentName" placeholder="Enter parent name">
+                        <input type="text" id="parentName" name="parentName" placeholder="Enter parent name" tabindex="3">
                         <!-- <div id="parentNameError" class="error-message"></div> -->
                     </div>
                     <div class="form-label">
                         Occupation<span>*</span>
                     </div>
                     <div class="form-input">
-                        <input type="text" id="occupation" name="occupation" placeholder="Enter occupation">
+                        <input type="text" id="occupation" name="occupation" placeholder="Enter occupation" tabindex="4">
                         <!-- <div id="occupationError" class="error-message"></div> -->
                     </div>
                 </div>
@@ -56,21 +56,22 @@
                         Address<span>*</span>
                     </div>
                     <div class="form-input">
-                        <textarea id="address" name="address" placeholder="Enter your address"></textarea>
+                        <textarea id="address" name="address" placeholder="Enter your address" tabindex="5"></textarea>
                         <!-- <div id="addressError" class="error-message"></div> -->
                     </div>
                     <div class="form-label relationship-label">
                         Relationship<span>*</span>
                     </div>
                     <div class="form-input">
-                        <input type="text" id="relationship" name="relationship" placeholder="Enter relationship" style="margin-top: 36px;">
+                        <input type="text" id="relationship" name="relationship" placeholder="Enter relationship" style="margin-top: 36px;" tabindex="6">
                         <!-- <div id="relationshipError" class="error-message"></div> -->
                     </div>
                 </div>
                 
                 <div class="section-title">Marks</div>
-                
+            <!-- <div class="table"> -->
                 <table id="subjectsTable">
+                    <!-- <div class="head"> -->
                     <thead>
                         <tr>
                             <th>S.No</th>
@@ -81,18 +82,22 @@
                             <th>Action</th>
                         </tr>
                     </thead>
+                    <!-- </div> -->
+                    <!-- <div class="body"> -->
                     <tbody>
                         <!-- Dynamic rows will be added here -->
                     </tbody>
+                    <!-- </div> -->
                 </table>
+            
                 
                 <button type="button" id="addSubjectBtn" class="add-subject-btn">
                     <span class="plus-icon">+</span> Add Subject
                 </button>
                 <div id="subjectsError" class="error-message"></div>
-                
+            <!-- </div> -->
                 <div class="section-title">Income Details</div>
-                
+
                 <div class="form-row">
                     <div class="form-label">
                         Annual Income<span>*</span>
