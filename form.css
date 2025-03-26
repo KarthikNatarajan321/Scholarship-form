@@ -2,71 +2,95 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 body {
-    background-color: #ffffff;
+    background-color: #f4f4f4;
+    line-height: 1.6;
 }
 
 .header {
     background-color: #223c68;
     color: white;
-    padding: 15px 0;
     text-align: center;
+    padding: 15px 0;
     font-size: 24px;
-    font-weight: normal;
+    font-weight: 600;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .section-title {
     color: #223c68;
-    margin: 40px 0 25px 0;
+    margin: 30px 0 20px 0;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
+    border-bottom: 2px solid #223c68;
+    padding-bottom: 10px;
 }
 
 .form-row {
     display: flex;
     margin-bottom: 15px;
+    gap: 20px;
 }
 
 .form-label {
     width: 20%;
-    padding-right: 10px;
     text-align: right;
     display: flex;
     align-items: center;
-}
-
-.form-input {
-    width: 25%;
-    padding-right: 30px;
-}
-
-.form-input input, .form-input textarea {
-    width: 100%;
-    padding: 8px;
-    border: none;
-    border-radius: 0;
-    background-color: #e9ecf0;
-    border-radius: 7px;
-    outline: none;
-}
-
-.form-input textarea {
-    height: 70px;
-    resize: none;
+    justify-content: flex-end;
+    font-weight: 500;
 }
 
 .form-label span {
     color: red;
-    margin-left: 3px;
+    margin-left: 5px;
+}
+
+.form-input {
+    width: 30%;
+    position: relative;
+}
+
+.form-input input, 
+.form-input textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.form-input input:focus, 
+.form-input textarea:focus {
+    outline: none;
+    border-color: #223c68;
+}
+
+.form-input textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: none;
+}
+
+input.error, 
+textarea.error {
+    border-color: red;
 }
 
 table {
@@ -76,146 +100,146 @@ table {
 }
 
 th, td {
-    padding: 8px 5px;
-    text-align: center;
     border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
 }
 
 th {
     background-color: #223c68;
     color: white;
-    font-weight: normal;
-}
-
-tr:nth-child(odd) {
-    background-color: #e9ecf0;
+    font-weight: 600;
 }
 
 tr:nth-child(even) {
-    background-color: #f5f5f5;
+    background-color: #f9f9f9;
 }
 
 .add-subject-btn {
     background-color: #223c68;
     color: white;
     border: none;
-    padding: 8px 15px;
+    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
     align-items: center;
     margin-left: auto;
-    margin-right: 0;
     font-size: 14px;
+    transition: background-color 0.3s ease;
 }
+
+.add-subject-btn:hover {
+    background-color: #1a2f52;
+}
+
+.plus-icon {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#subjectsTable .error-message {
+    position: relative;
+    display: block;
+    margin-top: 5px;
+}
+
+#subjectsTable input.error {
+    border-color: red;
+}
+
 
 .remove-btn {
     background-color: #ff3b30;
     color: white;
     border: none;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 14px;
-    margin: 0 auto;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+    background-color: #d32f2f;
 }
 
 .submit-btn {
     background-color: #223c68;
     color: white;
     border: none;
-    padding: 8px 24px;
-    border-radius: 15px;
+    padding: 12px 30px;
+    border-radius: 4px;
     cursor: pointer;
-    float: right;
-    margin-bottom: 32px;
     font-size: 16px;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
 }
 
-.plus-icon {
-    margin-right: 5px;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block !important;
+.submit-btn:hover {
+    background-color: #1a2f52;
 }
 
 .disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
-.subject-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    text-align: center;
-    outline: none;
-}
-
-/* Mobile Responsive Media Queries */
+/* Responsive Design */
 @media screen and (max-width: 768px) {
-    .container {
-        width: 100%;
-        padding: 10px;
-        height: 100vh;
-    }
-
     .form-row {
         flex-direction: column;
     }
 
-    .form-label, .form-input {
+    .form-label, 
+    .form-input {
         width: 100%;
         text-align: left;
-        padding-right: 0;
-        margin-bottom: 10px;
     }
 
     .form-label {
-        margin-top: 10px;
+        margin-bottom: 5px;
         text-align: left;
+        justify-content: flex-start;
     }
 
-    .section-title {
-        margin: 20px 0 15px 0;
+    .relationship-label {
+        margin-top: 10px;
     }
 
-    table {
+    /* Subjects Table Responsive Improvements */
+    #subjectsTable {
+        width: 100%;
         font-size: 14px;
     }
 
-    th, td {
-        padding: 6px 3px;
+    #subjectsTable th,
+    #subjectsTable td {
+        padding: 8px 4px;
     }
 
-    .submit-btn {
+    /* Ensure inputs in table are full width */
+    #subjectsTable .subject-input {
         width: 100%;
-        float: none;
+        box-sizing: border-box;
     }
 
-    .add-subject-btn {
-        margin: 10px 0;
-        width: 100%;
-        justify-content: center;
+    /* Error message styling for mobile */
+    .error-message {
+        font-size: 0.7em;
+        margin-top: 3px;
     }
 }
 
-/* Smaller Mobile Screens */
 @media screen and (max-width: 480px) {
     .container {
-        width: 100%; 
         padding: 10px;
-        height: 100vh;
     }
 
     .header {
@@ -226,15 +250,12 @@ tr:nth-child(even) {
         font-size: 16px;
     }
 
-    table {
+    #subjectsTable {
         font-size: 12px;
     }
 
-    th, td {
-        padding: 4px 2px;
-    }
-
-    .form-input input, .form-input textarea {
-        font-size: 14px;
+    .add-subject-btn {
+        width: 100%;
+        justify-content: center;
     }
 }

@@ -1,11 +1,9 @@
 $(document).ready(function() {
     const $form = $('#scholarshipForm');
     const $addSubjectBtn = $('#addSubjectBtn');
-    const $subjectsTable = $('#subjectsTable');
-    const $errorAlert = $('#errorAlert');
-    const $successAlert = $('#successAlert');
+    const $subjectsTable = $('#subjectsTable tbody');
 
-    // Add subject button event listener
+    // Add subject functionality (keeping existing logic)
     $addSubjectBtn.on('click', function() {
         const $rows = $subjectsTable.find('tr');
 
@@ -17,30 +15,20 @@ $(document).ready(function() {
             const score = $lastRow.find('.score').val().trim();
 
             if (!subjectName || !totalMarks || !score) {
-                showError('subjectsError', 'Fill the fields in the current row before adding a new one');
+                alert('Fill the fields in the current row before adding a new one');
                 return;
             }
         }
 
         // Check maximum rows
         if ($rows.length >= 5) {
-            showError('subjectsError', 'Maximum 5 subjects allowed');
+            alert('Maximum 5 subjects allowed');
             $addSubjectBtn.addClass('disabled');
         } else {
             addSubjectRow();
-            if ($rows.length >= 5) {
+            if ($rows.length >= 4) {
                 $addSubjectBtn.addClass('disabled');
             }
-        }
-    });
-
-    // Form submission event listener
-    $form.on('submit', function(e) {
-        e.preventDefault();
-        if (validateForm()) {
-            showSuccess('Form submitted successfully!');
-            // Normally you would submit the form here
-            // $form.submit();
         }
     });
 
@@ -51,9 +39,9 @@ $(document).ready(function() {
         const $newRow = $(`
             <tr>
                 <td>${rowCount + 1}</td>
-                <td><input type="text" class="subject-input subject-name" placeholder="Subject name" required></td>
-                <td><input type="number" class="subject-input total-marks" placeholder="Total" required></td>
-                <td><input type="number" class="subject-input score" placeholder="Score" required></td>
+                <td><input type="text" name="subject_${rowCount}" class="subject-input subject-name" placeholder="Subject name" required></td>
+                <td><input type="number" name="totalMarks_${rowCount}" class="subject-input total-marks" placeholder="Total" required min="0"></td>
+                <td><input type="number" name="score_${rowCount}" class="subject-input score" placeholder="Score" required min="0"></td>
                 <td class="percentage">-</td>
                 <td><button type="button" class="remove-btn">×</button></td>
             </tr>
@@ -70,7 +58,6 @@ $(document).ready(function() {
         const $removeBtn = $row.find('.remove-btn');
         const $totalInput = $row.find('.total-marks');
         const $scoreInput = $row.find('.score');
-        const $subjectInput = $row.find('.subject-name');
 
         // Remove button event listener
         $removeBtn.on('click', function() {
@@ -85,11 +72,6 @@ $(document).ready(function() {
         // Calculate percentage when total or score changes
         $totalInput.add($scoreInput).on('input', function() {
             calculatePercentage($row);
-        });
-
-        // Clear error when inputs change
-        $totalInput.add($scoreInput).add($subjectInput).on('input', function() {
-            clearError('subjectsError');
         });
     }
 
@@ -107,7 +89,6 @@ $(document).ready(function() {
             $percentageCell.text(percentage + '%');
         } else if (score > total) {
             $percentageCell.text('Error');
-            showError('', 'Score cannot be greater than total');
         } else {
             $percentageCell.text('-');
         }
@@ -121,168 +102,145 @@ $(document).ready(function() {
         });
     }
 
-    // Show error message
-    function showError(fieldId, message) {
-        if (fieldId) {
-            const $errorElement = $('#' + fieldId);
-            $errorElement.text(message).show();
-            setTimeout(() => {
-                $errorElement.hide();
-            }, 3000);
-        } else {
-            $errorAlert.text(message).show();
-            setTimeout(() => {
-                $errorAlert.hide();
-            }, 3000);
-        }
-    }
+    // jQuery Validation Setup with Comprehensive Rules
+    $("#scholarshipForm").validate({
+        // Custom error placement
+        errorPlacement: function(error, element) {
+            // Place error messages next to the input
+            error.insertAfter(element);
+            $(error).addClass("error-message");
+            // Also show error in the designated error message div
+            var errorId = "#" + element.attr("id") + "Error";
+            $(errorId).text(error.text()).show();
+        },
 
-    // Clear error message
-    function clearError(fieldId) {
-        if (fieldId) {
-            const $errorElement = $('#' + fieldId);
-            $errorElement.hide();
-        }
-    }
+        // Custom highlight and unhighlight
+        highlight: function(element) {
+            $(element).addClass("error");
+            var errorId = "#" + $(element).attr("id") + "Error";
+            // $(errorId).addClass("error-message");
+            $(errorId).show();
+        },
+        unhighlight: function(element) {
+            $(element).removeClass("error");
+            var errorId = "#" + $(element).attr("id") + "Error";
+            $(errorId).hide();
+        },
 
-    // Show success message
-    function showSuccess(message) {
-        $successAlert.text(message).show();
-        setTimeout(() => {
-            $successAlert.hide();
-        }, 3000);
-    }
+        // Validation Rules
+        rules: {
+            fullName: {
+                required: true,
+                lettersonly: true
+            },
+            age: {
+                required: true,
+                range: [15, 35]
+            },
+            parentName: {
+                required: true,
+                lettersonly: true
+            },
+            occupation: {
+                required: true,
+                lettersonly: true
+            },
+            address: {
+                required: true
+            },
+            relationship: {
+                required: true,
+                lettersonly: true
+            },
+            annualIncome: {
+                required: true
+            },
+            requisitionAmount: {
+                required: true,
+                digits: true
+            },
+            natureRequisition: {
+                required: true,
+                lettersonly: true
+            },
+            fundAmount: {
+                required: true,
+                digits: true,
+                max: function() {
+                    return parseFloat($("#requisitionAmount").val()) || 0;
+                }
+            }
+        },
 
-    // Validate the entire form
-    function validateForm() {
-        let isValid = true;
+        // Custom Validation Messages
+        messages: {
+            fullName: {
+                required: "Full name is required",
+                lettersonly: "Only alphabets are allowed"
+            },
+            age: {
+                required: "Age is required",
+                range: "Age must be between 15 and 35"
+            },
+            parentName: {
+                required: "Parent name is required",
+                lettersonly: "Only alphabets are allowed"
+            },
+            occupation: {
+                required: "Occupation is required",
+                lettersonly: "Only alphabets are allowed"
+            },
+            address: {
+                required: "Address is required"
+            },
+            relationship: {
+                required: "Relationship is required",
+                lettersonly: "Only alphabets are allowed"
+            },
+            requisitionAmount: {
+                required: "Requisition amount is required",
+                digits: "Only numbers are allowed"
+            },
+            fundAmount: {
+                required: "Fund amount is required",
+                digits: "Only numbers are allowed",
+                max: "Fund amount cannot be greater than requisition amount"
+            }
+        },
 
-        // Validate personal information
-        const fullName = $('#fullName').val().trim();
-        const age = $('#age').val().trim();
-        const parentName = $('#parentName').val().trim();
-        const occupation = $('#occupation').val().trim();
-        const address = $('#address').val().trim();
-        const relationship = $('#relationship').val().trim();
+        // Form submission handler
+        submitHandler: function(form) {
+            // Check subjects table validation
+            const $rows = $subjectsTable.find('tr');
+            if ($rows.length === 0) {
+                alert('At least one subject is required');
+                return false;
+            }
 
-        if (!fullName) {
-            showError('fullNameError', 'Full name is required');
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(fullName)) {
-            showError('fullNameError', 'Only alphabets are allowed');
-            isValid = false;
-        }
-
-        if (!age) {
-            showError('ageError', 'Age is required');
-            isValid = false;
-        } else if (age < 15 || age > 35) {
-            showError('ageError', 'Age must be between 15 and 35');
-            isValid = false;
-        }
-
-        if (!parentName) {
-            showError('parentNameError', 'Parent name is required');
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(parentName)) {
-            showError('parentNameError', 'Only alphabets are allowed');
-            isValid = false;
-        }
-
-        if (!occupation) {
-            showError('occupationError', 'Occupation is required');
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(occupation)) {
-            showError('occupationError', 'Only alphabets are allowed');
-            isValid = false;
-        }
-
-        if (!address) {
-            showError('addressError', 'Address is required');
-            isValid = false;
-        }
-
-        if (!relationship) {
-            showError('relationshipError', 'Relationship is required');
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(relationship)) {
-            showError('relationshipError', 'Only alphabets are allowed');
-            isValid = false;
-        }
-
-        // If personal information is invalid, stop further validation
-        if (!isValid) {
-            return false;
-        }
-
-        // Validate subjects
-        const $rows = $subjectsTable.find('tr');
-        if ($rows.length === 0) {
-            showError('subjectsError', 'At least one subject is required');
-            isValid = false;
-        } else {
             $rows.each(function() {
                 const subjectName = $(this).find('.subject-name').val().trim();
                 const totalMarks = $(this).find('.total-marks').val().trim();
                 const score = $(this).find('.score').val().trim();
 
                 if (!subjectName || !totalMarks || !score) {
-                    showError('subjectsError', 'All subject fields are required');
-                    isValid = false;
-                    return false; // Break out of the loop
+                    alert('All subject fields are required');
+                    return false;
                 }
 
                 if (parseFloat(score) > parseFloat(totalMarks)) {
-                    showError('subjectsError', 'Score cannot be greater than total marks');
-                    isValid = false;
-                    return false; // Break out of the loop
+                    alert('Score cannot be greater than total marks');
+                    return false;
                 }
             });
+
+            // If all validations pass
+            alert("Form submitted successfully!");
+            form.submit();
         }
+    });
 
-        // If subjects are invalid, stop further validation
-        if (!isValid) {
-            return false;
-        }
-
-        // Validate income details
-        const annualIncome = $('#annualIncome').val().trim();
-        const requisitionAmount = $('#requisitionAmount').val().trim();
-        const natureRequisition = $('#natureRequisition').val().trim();
-        const fundAmount = $('#fundAmount').val().trim();
-
-        if (!annualIncome) {
-            showError('annualIncomeError', 'Annual income is required');
-            isValid = false;
-        }
-
-        if (!requisitionAmount) {
-            showError('requisitionAmountError', 'Requisition amount is required');
-            isValid = false;
-        } else if (!/^[0-9]+$/.test(requisitionAmount)) {
-            showError('requisitionAmountError', 'Only numbers are allowed');
-            isValid = false;
-        }
-
-        if (!natureRequisition) {
-            showError('natureRequisitionError', 'Nature of requisition is required');
-            isValid = false;
-        } else if (!/^[A-Za-z\s]+$/.test(natureRequisition)) {
-            showError('natureRequisitionError', 'Only alphabets are allowed');
-            isValid = false;
-        }
-
-        if (!fundAmount) {
-            showError('fundAmountError', 'Fund amount is required');
-            isValid = false;
-        } else if (parseFloat(fundAmount) > parseFloat(requisitionAmount)) {
-            showError('fundAmountError', 'Fund amount cannot be greater than requisition amount');
-            isValid = false;
-        } else if (!/^[0-9]+$/.test(fundAmount)) {
-            showError('fundAmountError', 'Only numbers are allowed');
-            isValid = false;
-        }
-
-        return isValid;
-    }
+    // Add custom validation method for letters only
+    $.validator.addMethod("lettersonly", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    });
 });
