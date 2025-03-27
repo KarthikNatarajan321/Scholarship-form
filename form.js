@@ -29,14 +29,22 @@ $(document).ready(function() {
         const $rows = $subjectsTable.find('tr');
         const rowCount = $rows.length;
         const $newRow = $(`
-            <tr>
-                <td>${rowCount + 1}</td>
-                <td><input type="text" name="subject_${rowCount}" class="subject-input subject-name" placeholder="Subject name" required></td>
-                <td><input type="number" name="totalMarks_${rowCount}" class="subject-input total-marks" placeholder="Total" required min="0"></td>
-                <td><input type="number" name="score_${rowCount}" class="subject-input score" placeholder="Score" required min="0"></td>
-                <td class="percentage">-</td>
-                <td><button type="button" class="remove-btn">×</button></td>
-            </tr>
+        <tr>
+           <td data-label="S.No">1</td>
+           <td data-label="Subject">
+               <input type="text" name="subject_0" class="subject-input subject-name" placeholder="Subject name" required>
+            </td>
+            <td data-label="Total">
+              <input type="number" name="totalMarks_0" class="subject-input total-marks" placeholder="Total" required min="0">
+            </td>
+            <td data-label="Score">
+              <input type="number" name="score_0" class="subject-input score" placeholder="Score" required min="0">
+            </td>
+            <td data-label="%"><input type="text" name="percentage_${rowCount}" class="subject-input percentage-input" readonly></td>
+            <td data-label="Action">
+              <button type="button" class="remove-btn">×</button>
+            </td>
+        </tr>
         `);
 
         $subjectsTable.append($newRow);
@@ -81,18 +89,18 @@ $(document).ready(function() {
     function calculatePercentage($row) {
         const $totalInput = $row.find('.total-marks');
         const $scoreInput = $row.find('.score');
-        const $percentageCell = $row.find('.percentage');
-
+        const $percentageInput = $row.find('.percentage-input');
+    
         const total = parseFloat($totalInput.val()) || 0;
         const score = parseFloat($scoreInput.val()) || 0;
-
+    
         if (total > 0 && score <= total) {
             const percentage = (score / total * 100).toFixed(1);
-            $percentageCell.text(percentage + '%');
+            $percentageInput.val(percentage + '%');
         } else if (score > total) {
-            $percentageCell.text('Error');
+            $percentageInput.val('Error');
         } else {
-            $percentageCell.text('-');
+            $percentageInput.val('-');
         }
     }
 

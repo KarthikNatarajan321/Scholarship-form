@@ -216,34 +216,73 @@ tr:nth-child(even) {
     /* Subjects Table Responsive Improvements */
     #subjectsTable {
         width: 100%;
-        font-size: 14px;
-        display: flex;
-    }
-    
-    /* .table {
-        display: flex;
-    } */
-/* 
-    th,td{ 
-        flex-direction: column,
-    }; */
-
-       
-    
-
-    #subjectsTable th,
-    #subjectsTable td {
-        padding: 8px 4px;
-        flex-direction: column;
-
     }
 
-    /* Ensure inputs in table are full width */
-    #subjectsTable .subject-input {
+    #subjectsTable thead {
+        display: none; /* Hide original header */
+    }
+
+    #subjectsTable tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+
+    #subjectsTable tbody tr > td {
+        display: flex;
         width: 100%;
-        box-sizing: border-box;
+        align-items: center;
+        margin-bottom: 5px;
+        border: none;
     }
 
+    #subjectsTable tbody tr > td::before {
+        content: attr(data-label);
+        width: 30%;
+        font-weight: bold;
+        color: white;
+        background-color: #223c68;
+        padding: 5px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    #subjectsTable tbody tr > td:first-child::before {
+        content: "S.No";
+    }
+
+    #subjectsTable tbody tr > td:nth-child(2)::before {
+        content: "Subject";
+    }
+
+    #subjectsTable tbody tr > td:nth-child(3)::before {
+        content: "Total";
+    }
+
+    #subjectsTable tbody tr > td:nth-child(4)::before {
+        content: "Score";
+    }
+
+    #subjectsTable tbody tr > td:nth-child(5)::before {
+        content: "%";
+    }
+
+    #subjectsTable tbody tr > td:last-child::before {
+        content: "Action";
+    }
+
+    #subjectsTable tbody tr > td > input,
+    #subjectsTable tbody tr > td.percentage
+ {
+        width: 70%;
+    }
+
+    #subjectsTable tbody tr > td > button {
+        width: 8%;
+        margin-left: 3px;
+    }
     /* Error message styling for mobile */
     .error-message {
         font-size: 0.7em;
